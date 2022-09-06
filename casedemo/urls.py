@@ -13,6 +13,6 @@ schema_view = get_swagger_view(title="API")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('foursquare-api/', views.home),
-    path('', schema_view), 
-    path(r'^$', schema_view)
+    #path('', schema_view)
+    path('', views.home)
 ]
