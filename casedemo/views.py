@@ -2,10 +2,11 @@ from django.shortcuts import render
 import requests as req
 import json
 import api.models
-from flask import jsonify
+
 
 def home(requests):
-    latitude, longitude = 45, 34
+    
+    latitude, longitude = 38.630554, 27.422222
     # The valid range of latitude in degrees is -90 and +90 for the southern and northern hemisphere,
     # respectively. Longitude is in the range -180 and +180 specifying coordinates
     # west and east of the Prime Meridian, respectively.
@@ -17,18 +18,38 @@ def home(requests):
         "Authorization": "fsq38jf5s6BtxsM5GasJ/3pdhr7HlOSL2O6cjpiwegCvd90="
     }
     response = req.get(url, headers=headers)
+
+    locJson = json.loads(response.text)
     
     
-    data  = json.loads(response.text)
-    results_list = data['results']
-    categories_list = data['categories']
+    #print(locJson['results'][1]['location'])
     
-    locationModel = api.models.Location()
+    results_list = locJson['results']
+    print('results_list',type(results_list))
     for result in results_list:
-        locationModel.fsq_id=result['fsq_id']
-        for category in categories_list:
-            locationModel.name=category['name']
+        locationModel = api.models.Location()
+        
+        locationModel.fsq_id = result['fsq_id']
+        
+        lat = result['geocodes']['main']['latitude']
+        lng = result['geocodes']['main']['longitude']
+        
+        locationModel.latitude = lat
+        locationModel.longitude = lng
+        
+        
+        locationModel.country = result['location']['country']
+        
+        if "address" in result['location']:
+            locationModel.address = result['location']['address']
+        elif "formatted_address" in result['location']:
+            locationModel.address = result['location']['formatted_address']
             
-    #locationModel.save()
-    print(locationModel.name)   
+        if "region" in result['location']:
+                locationModel.region = result['location']['region']  
+    
+        locationModel.name = result['name']
+        locationModel.save()
+    
     return render(requests, "index.html")
+
