@@ -1,1 +1,66 @@
-<h1>Home Page</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Django Foursquare Api Test Case</title>
+  </head>
+  <body>
+    <form action="/foursquare-api/" method="get">
+      <div>
+        <label for="exampleInput1">api_key : </label>
+        <input
+          id="exampleInput1"
+          type="text"
+          name="apikey"
+          placeholder="Enter api_key"
+        />
+      </div>
+      <div>
+        <label for="exampleInput2">latitude : </label>
+        <input
+          id="inputLatitude"
+          type="text"
+          name="latitude"
+          placeholder="Enter latitude"
+        />
+      </div>
+      <div>
+        <label for="inputLongitude">longitude : </label>
+        <input
+          id="inputLongitude"
+          type="text"
+          name="longitude"
+          placeholder="Enter longitude"
+        />
+        <span id="errLongitude"></span>
+      </div>
+      <div>
+        <input id="sendData" type="submit" value="Send" />
+      </div>
+    </form>
+  </body>
+  <script>
+
+    document.getElementById("sendData").addEventListener("click", sendData);
+    function sendData() {
+      var Lat = document.getElementById("inputLatitude");
+      var Lng = document.getElementById("inputLongitude");
+      var errLng = document.getElementById("errLongitude");
+
+      // Latitude in degrees is -90 and +90
+      // Longitude is in the range -180 and +180
+      LatVal = Lat.value;
+      LngVal = Lng.value;
+      var url = location.href;
+
+      if (LatVal > 90 || LatVal < -90 || LngVal > 180 || LngVal < -180) {
+        window.location.href = "/";
+        alert("Error : Latitude in degrees is -90 and +90 ,Longitude is in the range -180 and +180");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</html>
